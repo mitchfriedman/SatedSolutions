@@ -9,7 +9,6 @@ def create_app():
     app = Flask(__name__)
     register_extensions(app)
     
-    
     return app
 
 
