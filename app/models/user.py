@@ -3,6 +3,7 @@ from sqlalchemy import (
     Column,
     String,
     INTEGER,
+    Boolean,
 )
 from app.utils.security import (
     encrypt,
@@ -18,6 +19,9 @@ class User(base):
 
     email = Column(String(128))
     password = Column(String(256))
+    first = Column(String(64))
+    last = Column(String(64))
+    age_check = Column(Boolean)
     account_type = Column(INTEGER)
 
     account_mappings = {
@@ -25,16 +29,19 @@ class User(base):
         2: 'Captain',
     }
 
-    def __init__(self, email, password):
+    def __init__(self, email, password, first, last, age_check):
         self.email = email
         self.password = password
+        self.first = first
+        self.last = last
+        self.age_check = age_check
 
         self.init()
 
     @classmethod
-    def create_user(cls, email, password):
+    def create_user(cls, email, password, *args):
         password = encrypt(password)
-        user = User(email, password)
+        user = User(email, password, *args)
 
         return user
 

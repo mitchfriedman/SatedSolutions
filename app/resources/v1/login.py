@@ -14,9 +14,12 @@ class Login(Resource):
         password = args['password']
 
         authed = User.authenticate(email, password)
+
         if authed:
             user = User.fetch_user_by_email(email)
             token = Token(user.unid)
-            return {'status': 'true', 'token': token.token}
+            return {'status': 'true', 'token': token.token}, 201
+        else:
+            return {'status': 'false'}, 403
         
 

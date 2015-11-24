@@ -36,3 +36,10 @@ class Token(base):
     def generate_random_token(self):
         return uuid.uuid4().hex + uuid.uuid4().hex
 
+    @classmethod
+    def get_token(cls, token):
+        return Token.get_single(token=token)
+
+    def expire_token(self):
+        self.delete(soft=False)
+
