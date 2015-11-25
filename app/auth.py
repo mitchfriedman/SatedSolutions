@@ -6,7 +6,6 @@ from app.models.token import Token
 def do_authentication(func, *args, **kwargs):
     token = get_token()
 
-    print(token)
     if token:
         authentication = token_authentication(token)
         if authentication.get('authorized') == True:
@@ -14,7 +13,7 @@ def do_authentication(func, *args, **kwargs):
             
             return func(*args, **kwargs)
     
-    raise Exception("InvalidAuthentication")
+    abort(401, "Invalid Authentication token"
 
 
 def get_token():
@@ -28,7 +27,7 @@ def get_user_unid(token):
 def token_authentication(token):
     token_instance = Token.get_token(token)
     if not token_instance or not token_instance.is_valid():
-        abort(403, 'Invalid Authentication token')
+        abort(401, 'Invalid Authentication token')
 
     return {
         'authorized': True, 
