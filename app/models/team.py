@@ -1,8 +1,6 @@
 from app.models import base
 from app.models.user import User
-
 from sqlalchemy import Column, ForeignKey, Integer, String
-
 from sqlalchemy import (
     Column,
     String,
@@ -44,6 +42,10 @@ class Team(base):
     @classmethod
     def get_teams_by_name(cls, name=None):
         return Team.get_list(team_name=name).all()
+
+    @classmethod
+    def get_team_by_unid(cls, team_unid):
+        return Team.get_single(unid=team_unid)
 
     @classmethod
     def get_all_teams(cls):

@@ -1,4 +1,4 @@
-from app.models.team import Team
+from app.models.team import Team as TeamModel
 from flask_restful import reqparse
 from app.resources.v1.base import BasicProtectedResource
 
@@ -40,9 +40,9 @@ class Teams(BasicProtectedResource):
         team_name = args.get('name', None)
         
         if team_name:
-            teams = Team.get_teams_by_name(name=team_name)
+            teams = TeamModel.get_teams_by_name(name=team_name)
         else:
-            teams = Team.get_all_teams()
+            teams = TeamModel.get_all_teams()
         
         team_data = [
             {
@@ -54,4 +54,27 @@ class Teams(BasicProtectedResource):
         ]
     
         return {'teams': team_data}
+
+
+class Team(BasicProtectedResource):
+
+    get_instance_parser = reqparse.RequestParser()
+    get_instance_parser.add_argument('team_unid', type=str, help="Team unid to fetch", required=True, location='view_args')
+
+    
+    def get(self, team_unid):
+        team = TeamModel.get_team_by_unid(team_unid)
+        
+        if team:
+            return {
+                'team': {
+                    'unid': team.unid,
+                    'name': team.team_name,
+                    'captain': team.team_captain,
+                }
+            }, 200
+            
+        else:
+            return {'status': 'false'}
+
 
