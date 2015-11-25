@@ -13,7 +13,7 @@ def do_authentication(func, *args, **kwargs):
             
             return func(*args, **kwargs)
     
-    abort(401, "Invalid Authentication token"
+    abort(401, "Invalid Authentication token")
 
 
 def get_token():
