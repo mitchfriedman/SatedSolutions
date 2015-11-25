@@ -30,7 +30,7 @@ class Teams(BasicProtectedResource):
         route = args['route_id']
         needs_accessibility = args['requires_accessibility']
 
-        team = Team.create_team(name, captain, max_members, num_members)
+        team = TeamModel.create_team(name, captain, max_members, num_members)
 
         return {'status': 'true', 'team_id': team.unid}, 201
 
