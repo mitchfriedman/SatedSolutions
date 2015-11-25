@@ -28,7 +28,7 @@ def get_user_unid(token):
 def token_authentication(token):
     token_instance = Token.get_token(token)
     if not token_instance or not token_instance.is_valid():
-        raise Exception('InvalidAuthenticationToken')
+        abort(403, 'Invalid Authentication token')
 
     return {
         'authorized': True, 
