@@ -14,7 +14,7 @@ def authenticated_function():
 class TestAuthentication(TestCase):
     
     def test_get_auth_token_with_headers(self):
-        with app.test_request_context('/', headers={'Authorization': 'foo'}):
+        with app.test_request_context('/', headers={'Authentication': 'foo'}):
             self.assertEqual('foo', get_token())
 
     def test_get_auth_token_no_headers(self):
@@ -29,7 +29,7 @@ class TestAuthentication(TestCase):
 
     def test_token_authentication_with_headers(self):
         token = Token('user123')
-        with app.test_request_context('/', headers={'Authorization': token.token}):
+        with app.test_request_context('/', headers={'Authentication': token.token}):
             return_value = authenticated_function()
             self.assertTrue(return_value)
             found_token = get_token()
