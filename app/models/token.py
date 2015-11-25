@@ -43,3 +43,6 @@ class Token(base):
     def expire_token(self):
         self.delete(soft=False)
 
+    def is_valid(self):
+        return self.expiry_time > datetime.datetime.now()
+

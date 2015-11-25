@@ -1,17 +1,14 @@
 from app.models.token import Token
-from flask_restful import Resource, reqparse
+from app.auth import get_token
+from flask_restful import reqparse
+from app.resources.v1.base import BasicProtectedResource
 
 
-class Logout(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('token', type=str, help='The token of the session to expire', required=True)
-
+class Logout(BasicProtectedResource):
     def post(self):
-        args = self.parser.parse_args()
-        token = args['token']
+        token = get_token()
         
         found_token = Token.get_token(token)
-        print(found_token)
 
         if found_token:
             found_token.expire_token()
