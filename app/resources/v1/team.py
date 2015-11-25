@@ -60,6 +60,12 @@ class Team(BasicProtectedResource):
 
     get_instance_parser = reqparse.RequestParser()
     get_instance_parser.add_argument('team_unid', type=str, help="Team unid to fetch", required=True, location='view_args')
+   
+    update_instance_parser = reqparse.RequestParser()
+    update_instance_parser.add_argument('team_unid', type=str, help="Team to update", required=True, location='view_args')
+    update_instance_parser.add_argument('team_captain', type=str, help="New team captain", required=False)
+    update_instance_parser.add_argument('number_participants', type=int, help='Change number of participants on team', required=False)
+    update_instance_parser.add_argument('requires_accessibility', type=int, help='Require accessibility for this team', required=False)
 
     
     def get(self, team_unid):
@@ -75,6 +81,33 @@ class Team(BasicProtectedResource):
             }, 200
             
         else:
-            return {'status': 'false'}
+            return {'status': 'false'}, 404
 
+    def post(self, team_unid):
+        args = self.update_instance_parser.parse_args()
+        team = TeamModel.get_team_by_unid(team_unid)
+        
+        if not team:
+            return {'status': 'false'}, 404
 
+        team_captain = args.get('team_captain')
+        if team_captain:
+            team.team_captain = team_captain
+        
+        number_participants = args.get('number_participants')
+        if number_participants:
+            team.number_participants = number_participants
+
+        requires_accessibility = args.get('required_accessibility')
+        if requires_accessibility:
+            team.requires_accessibility = requires_accessibility
+
+        return {
+            'team': {
+                'unid': team.unid,
+                'name': team.team_name,
+                'captain': team.team_captain,
+                'number_participants': team.number_participants,
+                'requires_accessibility': str(team.requires_accessibility).lower(),
+            }
+        }, 200
