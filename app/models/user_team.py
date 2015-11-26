@@ -40,6 +40,10 @@ class UserTeam(base):
     def get_user_unids_by_team(cls, team_unid):
         users = UserTeam.get_list(team_unid=team_unid).all()
         return [u.user_unid for u in users]
+
+    @classmethod
+    def get_users_teams_by_team(cls, team_unid):
+        return UserTeam.get_list(team_unid=team_unid).all()
     
     @classmethod
     def get_team_by_user(cls, user_unid):

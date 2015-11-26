@@ -3,6 +3,7 @@ from app.models.team import Team
 from app.models.user import User
 from flask_restful import reqparse
 from app.resources.v1.base import BasicProtectedResource
+from app.resources.v1.team import get_users_from_team
 
 
 class Participants(BasicProtectedResource):
@@ -31,6 +32,14 @@ class Participants(BasicProtectedResource):
         team.number_participants += 1
 
         return {'status': 'true', 'user_team_unid': user_team.unid, 'team': team.serialize()}
+
+    def get(self, team_unid):
+        team = Team.get_team_by_unid(team_unid)
+
+        if not team:
+            return {'status': 'false', 'message': 'No team found'}
+
+        return {'users': get_users_from_team(team_unid)}
     
     
 class Participant(BasicProtectedResource):
@@ -50,7 +59,7 @@ class Participant(BasicProtectedResource):
     
         return {
             'status': 'true',
-            'user_type': user_team.member_mappings[user_team.member_type],
+            'user_type': user_team.member_mappings.get(user_team.member_type, 'Participant'),
         }
 
 
