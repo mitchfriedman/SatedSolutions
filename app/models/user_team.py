@@ -2,6 +2,7 @@ from app.models import base
 from sqlalchemy import (
     Column,
     String,
+    INTEGER,
 )
 
 
@@ -13,7 +14,7 @@ class UserTeam(base):
     user_unid = Column(String(34))
     team_unid = Column(String(34))
     
-    member_type = Column(INTGER)
+    member_type = Column(INTEGER)
 
     member_mappings = {
         1: 'Participant',
@@ -24,6 +25,8 @@ class UserTeam(base):
         self.user_unid = user_unid
         self.team_unid = team_unid
         self.member_type = member_type
+
+        self.init()
     
     @classmethod
     def add_user_to_team(cls, user_unid, team_unid, member_type):
@@ -31,5 +34,6 @@ class UserTeam(base):
 
     @classmethod
     def get_user_unids_by_team(cls, team_unid):
-        return UserTeam.get_list(team_unid=team_unid).all()
-
+        users = UserTeam.get_list(team_unid=team_unid).all()
+        return [u.user_unid for u in users]
+    

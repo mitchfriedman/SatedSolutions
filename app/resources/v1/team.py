@@ -1,6 +1,17 @@
 from app.models.team import Team as TeamModel
+from app.models.user_team import UserTeam
+from app.models.user import User
 from flask_restful import reqparse
 from app.resources.v1.base import BasicProtectedResource
+
+
+def get_users_from_team(team_unid):
+    members = UserTeam.get_user_unids_by_team(team_unid)
+    users = [User.fetch_user_by_unid(member) for member in members]
+    users = [u for u in users if u is not None]
+    serialized_users = [user.serialize() for user in users]
+    
+    return serialized_users
 
 
 class Teams(BasicProtectedResource):
@@ -13,7 +24,8 @@ class Teams(BasicProtectedResource):
     create_team_parser.add_argument('number_participants', type=int, help='Current number of participants', required=False)
     create_team_parser.add_argument('max_participants', type=int, help='The maximum number of participants', required=False)
     create_team_parser.add_argument('route_id', type=int, help='Route assigned to a team', required=False)
-    create_team_parser.add_argument('requires_accessibility', type=bool, help='Whether or not a team requires accessibility considerations', required=False)
+    create_team_parser.add_argument('requires_accessibility', type=int, help='Whether or not a team requires accessibility considerations', required=False)
+    create_team_parser.add_argument('public_team', type=int, help='Whether or not this team is public', required=False)
 
     get_teams_parser = reqparse.RequestParser()
 
@@ -28,11 +40,14 @@ class Teams(BasicProtectedResource):
         captain = args['team_captain']
         num_members = args['number_participants']
         route = args['route_id']
-        needs_accessibility = args['requires_accessibility']
+        needs_accessibility = args.get('requires_accessibility', 0)
+        public = args.get('public_team', 1)
 
-        team = TeamModel.create_team(name, captain, max_members, num_members)
+        team = TeamModel.create_team(name, captain, max_members, num_members, public)
 
-        return {'status': 'true', 'team_id': team.unid}, 201
+        user_team = UserTeam.add_user_to_team(captain, team.unid, 1)
+
+        return {'status': 'true', 'team_id': team.unid, 'user_team': user_team.unid}, 201
 
     def get(self):
         args = self.get_teams_parser.parse_args()
@@ -55,11 +70,9 @@ class Teams(BasicProtectedResource):
     
         return {'teams': team_data}
 
+    
 
 class Team(BasicProtectedResource):
-
-    get_instance_parser = reqparse.RequestParser()
-    get_instance_parser.add_argument('team_unid', type=str, help="Team unid to fetch", required=True, location='view_args')
    
     update_instance_parser = reqparse.RequestParser()
     update_instance_parser.add_argument('team_unid', type=str, help="Team to update", required=True, location='view_args')
@@ -70,13 +83,14 @@ class Team(BasicProtectedResource):
     
     def get(self, team_unid):
         team = TeamModel.get_team_by_unid(team_unid)
-        
         if team:
+            users = get_users_from_team(team_unid)        
             return {
                 'team': {
                     'unid': team.unid,
                     'name': team.team_name,
                     'captain': team.team_captain,
+                    'users': users,
                 }
             }, 200
             
@@ -111,3 +125,4 @@ class Team(BasicProtectedResource):
                 'requires_accessibility': str(team.requires_accessibility).lower(),
             }
         }, 200
+

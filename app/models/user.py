@@ -38,6 +38,15 @@ class User(base):
 
         self.init()
 
+    def serialize(self):
+        return {
+            'unid': self.unid,
+            'email': self.email,
+            'first': self.first,
+            'last': self.last,
+            'over_12': self.age_check,
+        }
+
     @classmethod
     def create_user(cls, email, password, *args):
         password = encrypt(password)
