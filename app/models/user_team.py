@@ -30,7 +30,6 @@ class UserTeam(base):
 
     @classmethod
     def get_user_team_by_user_and_team(cls, user_unid, team_unid):
-        print(UserTeam.get_list(user_unid=user_unid, team_unid=team_unid).all())
         return UserTeam.get_single(user_unid=user_unid, team_unid=team_unid)
     
     @classmethod

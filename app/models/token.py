@@ -32,6 +32,7 @@ class Token(base):
     def update_expiry(self, seconds_delta=None):
         seconds_delta = seconds_delta or self.LIFESPAN
         self.expiry_time = datetime.datetime.now() + datetime.timedelta(seconds=seconds_delta)
+        self.save()
 
     def generate_random_token(self):
         return uuid.uuid4().hex + uuid.uuid4().hex
