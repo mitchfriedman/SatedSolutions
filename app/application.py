@@ -15,6 +15,5 @@ def create_app():
 def register_extensions(app):
     api.init_app(app)
     bcrypt.init_app(app)
-    CORS(app)
     stub()
 
