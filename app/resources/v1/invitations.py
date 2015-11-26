@@ -10,8 +10,7 @@ class Invitations(BasicProtectedResource):
     invite_parser = reqparse.RequestParser()
     
     invite_parser.add_argument('team_unid', type=str, help='The team to invite a participant to', required=True)
-    invite_parser.add_argument('inviter_unid', type=str, help='The participant who sent the invitation', required=True)
-    invite_parser.add_argument('invitee_email', type=str, help='The team member type', required=True)
+    invite_parser.add_argument('invitee_unid', type=str, help='The team member type', required=True)
     
     get_invites_parser = reqparse.RequestParser()
     get_invites_parser.add_argument('user_unid', type=str, help='The user to query by', required=False, location="args")
@@ -20,18 +19,22 @@ class Invitations(BasicProtectedResource):
     def post(self):
         args = self.invite_parser.parse_args()
         team_unid = args['team_unid']
-        inviter_unid = args['inviter_unid']
-        invitee_email = args.get('invitee_email') # default value of 1 (participant)
+        invitee_unid= args.get('invitee_unid') # default value of 1 (participant)
 
-        if not invitee_email:
+        if not invitee_unid:
             return {'status': 'false', 'message': 'Invalid invitee email'}
         
-        user = User.fetch_user_by_unid(inviter_unid)
+        user = User.fetch_user_by_unid(invitee_unid)
 
         if not user:
             return {'status': 'false', 'message': 'Invalid inviter unid'}
 
-        team = UserTeam.get_team_by_user(inviter_unid)
+        team = Team.get_team_by_unid(team_unid)
+
+        user_team_exist = UserTeam.get_user_team_by_user_and_team(invitee_unid, team.unid)
+
+        if user_team_exist:
+            return {'status': 'false', 'message': 'User already on that team'}
 
         invitation = TeamInvite.send_invitation(team_unid, inviter_unid, invitee_email)
 
