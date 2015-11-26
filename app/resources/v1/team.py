@@ -20,7 +20,7 @@ class Teams(BasicProtectedResource):
     
     # create team arguments
     create_team_parser.add_argument('team_name', type=str, help='The team\'s name', required=True)
-    create_team_parser.add_argument('team_captain', type=str, help='The Captain of the team', required=False)
+    create_team_parser.add_argument('team_captain', type=str, help='The Captain of the team', required=True)
     create_team_parser.add_argument('number_participants', type=int, help='Current number of participants', required=False)
     create_team_parser.add_argument('max_participants', type=int, help='The maximum number of participants', required=False)
     create_team_parser.add_argument('route_id', type=int, help='Route assigned to a team', required=False)
@@ -43,6 +43,11 @@ class Teams(BasicProtectedResource):
         needs_accessibility = args.get('requires_accessibility', 0)
         public = args.get('public_team', 1)
 
+        captain_user = User.fetch_by_unid(captain)
+        
+        if captain_user is None:
+            return {'status': 'false', 'message': 'Team captain given does not exist'}, 400
+
         team = TeamModel.create_team(name, captain, max_members, num_members, public)
 
         user_team = UserTeam.add_user_to_team(captain, team.unid, 1)
@@ -51,25 +56,16 @@ class Teams(BasicProtectedResource):
 
     def get(self):
         args = self.get_teams_parser.parse_args()
-        
         team_name = args.get('name', None)
         
         if team_name:
-            teams = TeamModel.get_teams_by_name(name=team_name)
+            teams = TeamModel.search_teams_by_name(name=team_name)
         else:
             teams = TeamModel.get_all_teams()
         
-        team_data = [
-            {
-                'unid': t.unid,
-                'name': t.team_name, 
-                'captain': t.team_captain, 
-            }
-            for t in teams
-        ]
+        team_data = [t.serialize() for t in teams]
     
         return {'teams': team_data}
-
     
 
 class Team(BasicProtectedResource):
@@ -85,13 +81,10 @@ class Team(BasicProtectedResource):
         team = TeamModel.get_team_by_unid(team_unid)
         if team:
             users = get_users_from_team(team_unid)        
+            team_serialized = team.serialize()
+            team_serialized['users'] = users
             return {
-                'team': {
-                    'unid': team.unid,
-                    'name': team.team_name,
-                    'captain': team.team_captain,
-                    'users': users,
-                }
+                'team': team_serialized
             }, 200
             
         else:

@@ -13,13 +13,15 @@ class Login(Resource):
         email = args['email']
         password = args['password']
 
+        if email is None or len(email) < 3:
+            return {'status': 'false', 'message': 'Invalid email'}, 403
+
         authed = User.authenticate(email, password)
 
         if authed:
             user = User.fetch_user_by_email(email)
             token = Token(user.unid)
-            return {'status': 'true', 'token': token.token}, 201
+            return {'status': 'true', 'token': token.token, 'user_unid': user.unid}, 200
         else:
-            return {'status': 'false'}, 403
+            return {'status': 'false', 'message': 'Incorrect login credentials'}, 403
         
-

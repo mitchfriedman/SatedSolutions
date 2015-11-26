@@ -19,7 +19,7 @@ class Team(base):
 
     team_name = Column(String(32), nullable=False)
     team_captain = Column(String(34))
-    number_partcipants = Column(INTEGER)
+    number_participants = Column(INTEGER)
     max_participants = Column(INTEGER)
     route_id = Column(INTEGER) # this should be a foreign key to the routes table
     requires_accessibility = Column(Boolean)
@@ -36,6 +36,15 @@ class Team(base):
 
         self.init()
 
+    def serialize(self):
+        return {
+            'team_name': self.team_name,
+            'unid': self.unid,
+            'number_participants': self.number_participants,
+            'public': str(self.public).lower(),
+            'captain': self.team_captain,
+        }
+
     @classmethod
     def create_team(cls, name, *args):
         team = Team(name, *args)
@@ -44,6 +53,10 @@ class Team(base):
     @classmethod
     def get_teams_by_name(cls, name=None):
         return Team.get_list(team_name=name).all()
+
+    @classmethod
+    def search_teams_by_name(cls, name=None):
+        return Team.get_list().filter(Team.team_name.like("%{}%".format(name))).all()
 
     @classmethod
     def get_team_by_unid(cls, team_unid):
