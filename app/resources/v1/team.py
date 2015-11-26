@@ -6,12 +6,16 @@ from app.resources.v1.base import BasicProtectedResource
 
 
 def get_users_from_team(team_unid):
-    members = UserTeam.get_user_unids_by_team(team_unid)
-    users = [User.fetch_user_by_unid(member) for member in members]
+    members = UserTeam.get_users_teams_by_team(team_unid)
+    users = [User.fetch_user_by_unid(member.user_unid) for member in members]
     users = [u for u in users if u is not None]
-    serialized_users = [user.serialize() for user in users]
+    serialized = []
+    for member, user in zip(members, users):
+        temp = user.serialize()
+        temp['team_unid'] = member.team_unid
+        serialized.append(temp)
     
-    return serialized_users
+    return serialized
 
 
 class Teams(BasicProtectedResource):
