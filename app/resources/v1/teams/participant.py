@@ -15,7 +15,7 @@ class Participants(BasicProtectedResource):
     def post(self, team_unid):
         args = self.create_parser.parse_args()
         user_unid = args['user_unid']
-        member_type = args.get('member_type', 1) # default value of 1 (participant)
+        member_type = args['member_type']
 
         team = Team.get_team_by_unid(team_unid)
 
@@ -33,6 +33,25 @@ class Participants(BasicProtectedResource):
     
     
 class Participant(BasicProtectedResource):
+
+    def get(self, team_unid, user_unid):
+        team = Team.get_team_by_unid(team_unid)
+
+        if not team:
+            return {'status': 'false', 'message': 'No team found'}, 404
+
+        user = User.fetch_user_by_unid(user_unid)
+
+        if not user:
+            return {'status': 'false', 'message': 'No user found'}, 404
+
+        user_team = UserTeam.get_user_team_by_user_and_team(user_unid, team_unid)
+    
+        return {
+            'status': 'true',
+            'user_type': user_team.member_mappings[user_team.member_type],
+        }
+
 
     def delete(self, team_unid, user_unid):
         team = Team.get_team_by_unid(team_unid)
