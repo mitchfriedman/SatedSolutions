@@ -6,6 +6,7 @@ from app.resources.v1.logout import Logout
 from app.resources.v1.team import Teams, Team
 from app.resources.v1.teams.participant import Participants, Participant
 from app.resources.v1.user import User, Users
+from app.resources.v1.teams.invitations import Invitation
 
 
 api = Api()
