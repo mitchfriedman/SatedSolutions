@@ -5,7 +5,6 @@ from flask_restful import reqparse
 
 
 class User(BasicProtectedResource):
-    get_parser = reqparse.RequestParser()
 
     def get(self, user_unid):
         user = UserModel.fetch_user_by_unid(user_unid)

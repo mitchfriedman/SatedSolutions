@@ -23,17 +23,30 @@ class TeamInvite(base):
         self.rejected = 0
         self.init()
 
+    def serialize(self):
+        return {
+            'invite_team_unid': self.invite_team_unid,
+            'invite_user_unid': self.invite_user_unid,
+            'status': 'pending',
+        }
+
     @classmethod
     def send_invitation(cls, team, inviter_unid, invitee_email):
-        return TeamInvite(team, inviter_unid, invitee_email)
+        return TeamInvite(team.unid, inviter_unid, invitee_email)
 
-    @classmethod
     def accept_invite(self):
         self.rejected = 0
-        self.delete()
+        self.delete(soft=False)
 
-    @classmethod
     def reject_invite(self):
         self.rejected = 1
-        self.delete()
+        self.delete(soft=False)
 
+    @classmethod
+    def get_by_user_unid(cls, user_unid):
+        return TeamInvite.get_list(invite_user_unid=user_unid).all()
+
+    @classmethod
+    def get_invites(cls):
+        return TeamInvite.get_list().all()
+    
