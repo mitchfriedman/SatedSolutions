@@ -19,6 +19,15 @@ class Register(Resource):
         age_check = args.get('ageCheck', "true")
         age_check = 1 if age_check == "true" else 0
 
+        if email is None or len(email) < 3:
+            return {'status': 'false', 'message': 'Invalid email'}, 400
+        
+        if password is None or len(password) < 4:
+            return {'status': 'false', 'message': 'Invalid password (minimum length of 4)'}, 400
+
+        if len(first) == 0 or len(last) == 0:
+            return {'status': 'false', 'message': 'You must enter a first name and last name'}, 400
+
         if User.fetch_user_by_email(email) is not None:
             return {"status": "false", 'message': 'Email already in use'}, 400
 

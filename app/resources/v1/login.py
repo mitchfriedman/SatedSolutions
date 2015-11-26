@@ -13,6 +13,9 @@ class Login(Resource):
         email = args['email']
         password = args['password']
 
+        if email is None or len(email) < 3:
+            return {'status': 'false', 'message': 'Invalid email'}, 403
+
         authed = User.authenticate(email, password)
 
         if authed:

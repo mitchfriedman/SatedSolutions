@@ -59,9 +59,13 @@ class User(base):
         return User.get_single(email=email)
 
     @classmethod
+    def get_all_users(cls):
+        return User.get_list().all()
+
+    @classmethod
     def fetch_user_by_unid(cls, unid):
         return User.get_single(unid=unid)
-    
+
     @classmethod
     def authenticate(cls, email, password):
         user = cls.fetch_user_by_email(email)
