@@ -45,7 +45,7 @@ class Participant(BasicProtectedResource):
         if not user:
             return {'status': 'false', 'message': 'No user found'}, 404
 
-        user_team = UserTeam.get_user_team(user_unid, team_unid)
+        user_team = UserTeam.get_user_team_by_user_and_team(user_unid, team_unid)
 
         if not user_team:
             return {'status': 'false', 'message': 'The given user is not on that team'}, 400
