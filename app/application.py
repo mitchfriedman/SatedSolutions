@@ -3,7 +3,6 @@ from flask.ext.bcrypt import Bcrypt
 bcrypt = Bcrypt()
 from app.resources.v1 import api
 from app.database import stub
-from flask.ext.cors import CORS
 
 
 def create_app():
