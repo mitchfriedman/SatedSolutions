@@ -91,6 +91,8 @@ class Invitation(BasicProtectedResource):
         if status.lower() == 'accept':
             user_team = UserTeam(invitation.invite_user_unid, invitation.invite_team_unid, 1)
             invitation.delete(soft=False)
+            team = Team.get_team_by_unid(invitation.invite_team_unid)
+            team.number_participants += 1
             return {'status': 'true', 'message': 'Invite accepted'}, 201
         elif status.lower() == 'decline' or status.lower() == 'revoke':
             invitation.delete(soft=False)
