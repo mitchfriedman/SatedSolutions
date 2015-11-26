@@ -4,7 +4,7 @@ from app.resources.v1.login import Login
 from app.resources.v1.register import Register
 from app.resources.v1.logout import Logout
 from app.resources.v1.team import Teams, Team
-from app.resources.v1.teams.participant import Participants
+from app.resources.v1.teams.participant import Participants, Participant
 from app.resources.v1.user import User, Users
 
 
@@ -20,6 +20,7 @@ api.add_resource(Teams, '/api/Teams')
 api.add_resource(Team, '/api/Teams/<string:team_unid>')
 
 api.add_resource(Participants, '/api/Teams/<string:team_unid>/Participants')
+api.add_resource(Participant, '/api/Teams/<string:team_unid>/Participants/<string:user_unid>')
 
 api.add_resource(Users, '/api/Users')
 api.add_resource(User, '/api/Users/<string:user_unid>')
