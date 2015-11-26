@@ -28,11 +28,16 @@ class TeamInvite(base):
             'invite_team_unid': self.invite_team_unid,
             'invite_user_unid': self.invite_user_unid,
             'status': 'pending',
+            'unid': self.unid,
         }
 
     @classmethod
+    def get_by_unid(cls, invite_unid):
+        return TeamInvite.get_single(unid=invite_unid)
+
+    @classmethod
     def send_invitation(cls, team, inviter_unid, invitee_email):
-        return TeamInvite(team.unid, inviter_unid, invitee_email)
+        return TeamInvite(team, inviter_unid, invitee_email)
 
     def accept_invite(self):
         self.rejected = 0

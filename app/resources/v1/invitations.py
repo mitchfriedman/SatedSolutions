@@ -1,7 +1,7 @@
 from app.models.user import User
+from app.models.user_team import UserTeam
 from app.models.team import Team
 from app.models.team_invite import TeamInvite
-from app.models.user_team import UserTeam
 from flask_restful import Resource, reqparse
 from app.resources.v1.base import BasicProtectedResource
 
@@ -35,7 +35,7 @@ class Invitations(BasicProtectedResource):
 
         invitation = TeamInvite.send_invitation(team_unid, inviter_unid, invitee_email)
 
-        return {'status': 'true', 'message': 'Invitation sent successfully'}
+        return {'status': 'true', 'message': 'Invitation sent successfully'}, 201
     
     def get(self):
         args = self.get_invites_parser.parse_args()
@@ -51,5 +51,37 @@ class Invitations(BasicProtectedResource):
         invites_serialized = [invite.serialize() for invite in team_invites]
         return {
             'invites': invites_serialized
-        }
+        }, 200
+
+
+class Invitation(BasicProtectedResource):
+
+    update_parser = reqparse.RequestParser()
+    
+    update_parser.add_argument('status', type=str, help='The status of the invitation', required=True)
+
+   
+    def get(self, invitation_unid):
+        invitation = TeamInvite.get_by_unid(invitation_unid)
+
+        if not invitation:
+            return {'status': 'false', 'message': 'No invitation found'}, 404
+ 
+        return {'invitation': invitation.serialize()},200
+
+    def post(self, invitation_unid):
+        args = self.update_parser.parse_args()
+        status = args['status']
+        
+        invitation = TeamInvite.get_by_unid(invitation_unid)
+        if invitation is None:
+            return {'status': 'false', 'message': 'No invitation found'}, 404
+
+        if status.lower() == 'accept':
+            user_team = UserTeam(invitation.invite_user_unid, invitation.invite_team_unid, 1)
+            invitation.delete(soft=False)
+            return {'status': 'true', 'message': 'Invite accepted'}, 201
+        elif status.lower() == 'decline' or status.lower() == 'revoke':
+            invitation.delete(soft=False)
+            return {'status': 'true', 'message': 'Invitation processed'}, 201
 
