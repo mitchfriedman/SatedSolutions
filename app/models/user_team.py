@@ -27,6 +27,10 @@ class UserTeam(base):
         self.member_type = member_type
 
         self.init()
+
+    @classmethod
+    def get_user_team(cls, user_unid, team_unid):
+        return UserTeam.get_single(user_unid=user_unid, team_unid=team_unid)
     
     @classmethod
     def add_user_to_team(cls, user_unid, team_unid, member_type):
