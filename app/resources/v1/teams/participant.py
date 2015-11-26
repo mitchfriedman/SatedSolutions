@@ -28,6 +28,7 @@ class Participants(BasicProtectedResource):
             return {'status': 'false', 'message': 'Invalid user unid'}
 
         user_team = UserTeam.add_user_to_team(user_unid, team_unid, member_type)
+        team.number_participants += 1
 
         return {'status': 'true', 'user_team_unid': user_team.unid, 'team': team.serialize()}
     
@@ -70,6 +71,7 @@ class Participant(BasicProtectedResource):
             return {'status': 'false', 'message': 'The given user is not on that team'}, 400
         
         user_team.delete(soft=False)
+        team.number_participants -= 1
         
         return {}, 204
 
