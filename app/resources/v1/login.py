@@ -21,7 +21,7 @@ class Login(Resource):
         if authed:
             user = User.fetch_user_by_email(email)
             token = Token(user.unid)
-            return {'status': 'true', 'token': token.token}, 201
+            return {'status': 'true', 'token': token.token, 'user_unid': user.unid}, 200
         else:
             return {'status': 'false', 'message': 'Incorrect login credentials'}, 403
         

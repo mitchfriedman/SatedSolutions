@@ -27,5 +27,5 @@ class Participants(BasicProtectedResource):
 
         user_team = UserTeam.add_user_to_team(user_unid, team_unid, member_type)
 
-        return {'status': 'true', 'user_team_unid': user_team.unid}
+        return {'status': 'true', 'user_team_unid': user_team.unid, 'team': team.serialize()}
 
