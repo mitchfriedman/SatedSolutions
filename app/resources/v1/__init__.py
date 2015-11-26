@@ -14,7 +14,7 @@ api = Api()
 
 api.add_resource(Sample, '/api/Sample')
 api.add_resource(Login, '/api/Login')
-api.add_resource(Register, '/api/Register')
+api.add_resource(Register, '/api/Register', '/api/Users')
 api.add_resource(Logout, '/api/Logout')
 
 api.add_resource(Teams, '/api/Teams')
