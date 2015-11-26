@@ -14,7 +14,7 @@ class TeamInvite(base):
     invite_team_unid = Column(String(34))
     invite_user_unid = Column(String(34))
     invited_user_email = Column(String(128))
-    rejected = Column(INTEGER)
+    
 
     def __init__(self, invite_team_unid, invite_user_unid, invited_user_email):
         self.invite_team_unid = invite_team_unid
