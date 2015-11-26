@@ -9,8 +9,8 @@ class ModelMixin(object):
 
     auto_id = Column(Integer, primary_key=True, autoincrement=True)
 
-    date_created = Column(DateTime, nullable=False)
-    date_updated = Column(DateTime, nullable=False)
+    date_created = Column(DateTime, nullable=True)
+    date_updated = Column(DateTime, nullable=True)
 
     alive = Column(Boolean)
     unid = Column(String(34))
