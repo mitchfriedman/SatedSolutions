@@ -29,6 +29,8 @@ def token_authentication(token):
     if not token_instance or not token_instance.is_valid():
         abort(401, 'Invalid Authentication token')
 
+    token_instance.update_expiry()
+
     return {
         'authorized': True, 
         'token': token
