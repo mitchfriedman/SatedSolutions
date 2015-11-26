@@ -48,10 +48,14 @@ class TeamInvite(base):
         self.delete(soft=False)
 
     @classmethod
+    def get_by_team_unid(cls, team_unid):
+        return TeamInvite.get_list(invite_team_unid=team_unid)
+
+    @classmethod
     def get_by_user_unid(cls, user_unid):
-        return TeamInvite.get_list(invite_user_unid=user_unid).all()
+        return TeamInvite.get_list(invite_user_unid=user_unid)
 
     @classmethod
     def get_invites(cls):
-        return TeamInvite.get_list().all()
+        return TeamInvite.get_list()
     

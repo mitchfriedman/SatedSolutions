@@ -12,10 +12,10 @@ class Invitations(BasicProtectedResource):
     invite_parser.add_argument('team_unid', type=str, help='The team to invite a participant to', required=True)
     invite_parser.add_argument('inviter_unid', type=str, help='The participant who sent the invitation', required=True)
     invite_parser.add_argument('invitee_email', type=str, help='The team member type', required=True)
-    invite_parser.add_argument('rejected', type=int, help='Rejected Status', required=False)
     
     get_invites_parser = reqparse.RequestParser()
-    get_invites_parser.add_argument('user_unid', type=str, help='The user to query by', required=False)
+    get_invites_parser.add_argument('user_unid', type=str, help='The user to query by', required=False, location="args")
+    get_invites_parser.add_argument('team_unid', type=str, help='The team to query by', required=False, location="args")
 
     def post(self):
         args = self.invite_parser.parse_args()
@@ -35,18 +35,29 @@ class Invitations(BasicProtectedResource):
 
         invitation = TeamInvite.send_invitation(team_unid, inviter_unid, invitee_email)
 
-        return {'status': 'true', 'message': 'Invitation sent successfully'}, 201
+        return {'status': 'true', 'message': 'Invitation sent successfully', 'invitation_unid': invitation.unid}, 201
     
     def get(self):
         args = self.get_invites_parser.parse_args()
         user_unid = args['user_unid']
+        team_unid = args['team_unid']
+        
+        if team_unid:
+            team = Team.get_team_by_unid(team_unid)
+            if not team:
+                return {'status': 'false', 'message': 'No team found'}
+        
+            result = TeamInvite.get_by_team_unid(team_unid)
+        else:
+            result = TeamInvite.get_invites()
+
         if user_unid:
             user = User.fetch_user_by_unid(user_unid)
             if not user:
                 return {'status': 'false', 'message': 'No user found'}
-            team_invites = TeamInvite.get_by_user_unid(user_unid)
+            team_invites = result.filter_by(invite_user_unid=user_unid)
         else:
-            team_invites = TeamInvite.get_invites()
+            team_invites = result
         
         invites_serialized = [invite.serialize() for invite in team_invites]
         return {
