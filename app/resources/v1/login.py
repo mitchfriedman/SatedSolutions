@@ -1,5 +1,6 @@
 from app.models.token import Token
 from app.models.user import User
+from app.models.user_team import UserTeam
 from flask_restful import Resource, reqparse
 
 
@@ -20,8 +21,10 @@ class Login(Resource):
 
         if authed:
             user = User.fetch_user_by_email(email)
+            user_team = UserTeam.get_team_by_user(user.unid)
+            team_unid = user_team.team_unid if user_team else None
             token = Token(user.unid)
-            return {'status': 'true', 'token': token.token, 'user_unid': user.unid}, 200
+            return {'status': 'true', 'token': token.token, 'user_unid': user.unid, 'team_unid':team_unid}, 200
         else:
             return {'status': 'false', 'message': 'Incorrect login credentials'}, 403
         
