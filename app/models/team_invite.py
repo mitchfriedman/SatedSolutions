@@ -33,10 +33,6 @@ class TeamInvite(base):
     def get_by_unid(cls, invite_unid):
         return TeamInvite.get_single(unid=invite_unid)
 
-    @classmethod
-    def send_invitation(cls, team, inviter_unid, invitee_email):
-        return TeamInvite(team, inviter_unid, invitee_email)
-
     def accept_invite(self):
         self.rejected = 0
         self.delete(soft=False)

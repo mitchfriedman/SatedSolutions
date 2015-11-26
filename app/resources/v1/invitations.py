@@ -36,7 +36,7 @@ class Invitations(BasicProtectedResource):
         if user_team_exist:
             return {'status': 'false', 'message': 'User already on that team'}
 
-        invitation = TeamInvite.send_invitation(team_unid, invitee_unid)
+        invitation = TeamInvite(team_unid, invitee_unid)
 
         return {'status': 'true', 'message': 'Invitation sent successfully', 'invitation_unid': invitation.unid}, 201
     
