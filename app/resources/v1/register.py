@@ -16,10 +16,11 @@ class Register(Resource):
         password = args['password']
         first = args['first']
         last = args['last']
-        age_check = args['ageCheck']
+        age_check = args.get('ageCheck', "true")
+        age_check = 1 if age_check == "true" else 0
 
         if User.fetch_user_by_email(email) is not None:
-            return {"status": "false"}, 400
+            return {"status": "false", 'message': 'Email already in use'}, 400
 
         user = User.create_user(email, password, first, last, age_check)
         

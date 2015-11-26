@@ -51,7 +51,6 @@ class Teams(BasicProtectedResource):
 
     def get(self):
         args = self.get_teams_parser.parse_args()
-        
         team_name = args.get('name', None)
         
         if team_name:
@@ -59,14 +58,7 @@ class Teams(BasicProtectedResource):
         else:
             teams = TeamModel.get_all_teams()
         
-        team_data = [
-            {
-                'unid': t.unid,
-                'name': t.team_name, 
-                'captain': t.team_captain, 
-            }
-            for t in teams
-        ]
+        team_data = [t.serialize() for t in teams]
     
         return {'teams': team_data}
 

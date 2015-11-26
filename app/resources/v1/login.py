@@ -20,6 +20,5 @@ class Login(Resource):
             token = Token(user.unid)
             return {'status': 'true', 'token': token.token}, 201
         else:
-            return {'status': 'false'}, 403
+            return {'status': 'false', 'message': 'Incorrect login credentials'}, 403
         
-
