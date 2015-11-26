@@ -7,9 +7,6 @@ from sqlalchemy import (
     INTEGER,
     Boolean,
 )
-from app.utils.security import (
-    encrypt,
-)
 
 
 class Team(base):
@@ -23,7 +20,7 @@ class Team(base):
     max_participants = Column(INTEGER)
     route_id = Column(INTEGER) # this should be a foreign key to the routes table
     requires_accessibility = Column(Boolean)
-    public = Column(Boolean)
+    public = Column(INTEGER)
 
     def __init__(self, name, team_captain, max_participants, current_num_participants, public):
         self.team_name = name
@@ -56,7 +53,7 @@ class Team(base):
 
     @classmethod
     def search_teams_by_name(cls, name=None):
-        return Team.get_list().filter(Team.team_name.like("%{}%".format(name))).all()
+        return Team.get_list(public=1).filter(Team.team_name.like("%{}%".format(name))).all()
 
     @classmethod
     def get_team_by_unid(cls, team_unid):
@@ -64,5 +61,5 @@ class Team(base):
 
     @classmethod
     def get_all_teams(cls):
-        return Team.get_list().all()
+        return Team.get_list(public=1).all()
 

@@ -41,9 +41,10 @@ class Teams(BasicProtectedResource):
         num_members = args['number_participants']
         route = args['route_id']
         needs_accessibility = args.get('requires_accessibility', 0)
-        public = args.get('public_team', 1)
+        public = args.get('public_team', 0)
+        public = 0 if public == "0" or public == 0 or public == None else 1
 
-        captain_user = User.fetch_by_unid(captain)
+        captain_user = User.fetch_user_by_unid(captain)
         
         if captain_user is None:
             return {'status': 'false', 'message': 'Team captain given does not exist'}, 400

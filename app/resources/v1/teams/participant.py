@@ -51,4 +51,6 @@ class Participant(BasicProtectedResource):
             return {'status': 'false', 'message': 'The given user is not on that team'}, 400
         
         user_team.delete()
+        
+        return {}, 204
 
