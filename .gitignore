@@ -3,5 +3,6 @@
 venv
 .idea
 tmp.db
+tmp.db-journal
 *.swp
 

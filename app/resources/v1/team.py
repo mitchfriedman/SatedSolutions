@@ -59,7 +59,7 @@ class Teams(BasicProtectedResource):
         team_name = args.get('name', None)
         
         if team_name:
-            teams = TeamModel.get_teams_by_name(name=team_name)
+            teams = TeamModel.search_teams_by_name(name=team_name)
         else:
             teams = TeamModel.get_all_teams()
         

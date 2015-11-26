@@ -55,6 +55,10 @@ class Team(base):
         return Team.get_list(team_name=name).all()
 
     @classmethod
+    def search_teams_by_name(cls, name=None):
+        return Team.get_list().filter(Team.team_name.like("%{}%".format(name))).all()
+
+    @classmethod
     def get_team_by_unid(cls, team_unid):
         return Team.get_single(unid=team_unid)
 
