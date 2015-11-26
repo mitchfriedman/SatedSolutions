@@ -24,10 +24,10 @@ class Token(base):
     def __init__(self, user_unid):
         self.token = self.generate_random_token()
         self.user_unid = user_unid
-        self.update_expiry()
-        self.expired = False
-
         self.init()
+        self.expired = False
+        self.update_expiry()
+
 
     def update_expiry(self, seconds_delta=None):
         seconds_delta = seconds_delta or self.LIFESPAN
