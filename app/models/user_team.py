@@ -37,3 +37,7 @@ class UserTeam(base):
         users = UserTeam.get_list(team_unid=team_unid).all()
         return [u.user_unid for u in users]
     
+    @classmethod
+    def get_team_by_user(cls, user_unid):
+        return UserTeam.get_single(user_unid=user_unid)
+
