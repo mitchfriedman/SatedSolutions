@@ -51,6 +51,10 @@ class ModelMixin(object):
     def newest(cls, query):
         return query.order_by(cls.date_updated.desc())
 
+    @classmethod
+    def oldest(cls, query):
+        return query.order_by(cls.date_created.asc())
+
     def init(self):
         self.unid = self.generate_unid()
         self.date_created = datetime.datetime.now()

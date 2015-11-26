@@ -45,6 +45,7 @@ class User(base):
             'first': self.first,
             'last': self.last,
             'over_12': self.age_check,
+            'date_created': str(self.date_created),
         }
 
     @classmethod

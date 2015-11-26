@@ -45,3 +45,8 @@ class UserTeam(base):
     def get_team_by_user(cls, user_unid):
         return UserTeam.get_single(user_unid=user_unid)
 
+    @classmethod
+    def get_oldest_teammate(cls, team_unid):
+        users = UserTeam.get_list(team_unid=team_unid)
+        return users.oldest()
+
