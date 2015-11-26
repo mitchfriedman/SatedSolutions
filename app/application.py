@@ -3,6 +3,7 @@ from flask.ext.bcrypt import Bcrypt
 bcrypt = Bcrypt()
 from app.resources.v1 import api
 from app.database import stub
+from flask.ext.cors import CORS
 
 
 def create_app():
@@ -15,5 +16,6 @@ def create_app():
 def register_extensions(app):
     api.init_app(app)
     bcrypt.init_app(app)
+    CORS(app)
     stub()
 
