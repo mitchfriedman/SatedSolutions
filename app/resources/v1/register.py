@@ -17,7 +17,7 @@ class Register(Resource):
         first = args['first']
         last = args['last']
         age_check = args.get('ageCheck', "true")
-        age_check = 1 if age_check == "true" else 0
+        age_check = True if age_check == "true" else False
 
         if email is None or len(email) < 3:
             return {'status': 'false', 'message': 'Invalid email'}, 400
