@@ -50,7 +50,7 @@ class Participant(BasicProtectedResource):
         if not user_team:
             return {'status': 'false', 'message': 'The given user is not on that team'}, 400
         
-        user_team.delete()
+        user_team.delete(soft=False)
         
         return {}, 204
 
