@@ -18,6 +18,7 @@ api.add_resource(Logout, '/api/Logout')
 
 api.add_resource(Teams, '/api/Teams')
 api.add_resource(Team, '/api/Teams/<string:team_unid>')
+api.add_resource(Invitation, '/api/Teams/<string:team_unid>/Invitation')
 
 api.add_resource(Participants, '/api/Teams/<string:team_unid>/Participants')
 
