@@ -1,7 +1,7 @@
 SatedSolutions code for the backend and API
 
 Note:
-This project is built with python 3.  Make sure python3 is installed and accessible via "python3" on command line.
+This project is built with python 3.3.  Make sure python3 is installed and accessible via "python3" on command line.
 
 
 Installation:
