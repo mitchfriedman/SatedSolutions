@@ -38,7 +38,6 @@ class Users(BasicProtectedResource):
         args = self.get_users_parser.parse_args()
         email = args['email']
 
-        print(email)
         if email:
             users = UserModel.get_list(email=email.lower())
         else:
