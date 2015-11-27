@@ -14,7 +14,7 @@ class Token(base):
 
     prefix = 'TO'
 
-    LIFESPAN = 3600 # 1 hour
+    LIFESPAN = 360000
 
     token = Column(String(128))
     expiry_time = Column(DateTime)
