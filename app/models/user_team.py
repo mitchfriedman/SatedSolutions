@@ -52,5 +52,5 @@ class UserTeam(base):
     @classmethod
     def get_oldest_team_member(cls, team_unid):
         users = UserTeam.get_list(team_unid=team_unid)
-        return users.oldest()
+        return UserTeam.oldest(users).first()
 
