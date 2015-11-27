@@ -27,5 +27,5 @@ class TeamRoutes(BasicProtectedResource):
         team = get_team(team_unid)
         
         route = RouteTeam.get_team_route(team_unid)
-        return {'status': 'true', 'route': route.serialize()}
+        return {'status': 'true', 'route': route.serialize() if route else None}
 
