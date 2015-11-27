@@ -29,6 +29,8 @@ class Participants(BasicProtectedResource):
             return {'status': 'false', 'message': 'Invalid user unid'}
 
         user_team = UserTeam.add_user_to_team(user_unid, team_unid, member_type)
+        if user_team.member_type == 2:
+            team.team_captain = user_team.user_unid
         team.number_participants += 1
 
         return {'status': 'true', 'user_team_unid': user_team.unid, 'team': team.serialize()}

@@ -55,7 +55,7 @@ class Teams(BasicProtectedResource):
 
         team = TeamModel.create_team(name, captain, max_members, num_members, public)
 
-        user_team = UserTeam.add_user_to_team(captain, team.unid, 1)
+        user_team = UserTeam.add_user_to_team(captain, team.unid, 2)
 
         return {'status': 'true', 'team_id': team.unid, 'user_team': user_team.unid}, 201
 
