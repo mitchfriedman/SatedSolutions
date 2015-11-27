@@ -16,8 +16,9 @@ class TeamRoutes(BasicProtectedResource):
         route_unid = args['route_unid']
         route = get_route(route_unid)
 
-        if RouteTeam.get_team_route(team_unid):
-            return {'status': 'false', 'message': 'Team already has a route'}, 400
+        found = RouteTeam.get_team_route(team_unid):
+        if found:
+            found.delete(soft=False)
 
         route_team = RouteTeam(route_unid, team_unid)
 
