@@ -85,19 +85,20 @@ class Invitation(BasicProtectedResource):
 
     def post(self, invitation_unid):
         args = self.update_parser.parse_args()
-        status = args['status']
+        status = args['status'].lower()
         
         invitation = TeamInvite.get_by_unid(invitation_unid)
         if invitation is None:
             return {'status': 'false', 'message': 'No invitation found'}, 404
-
-        if status.lower() == 'accept':
+    
+        if status == 'accept':
             user_team = UserTeam(invitation.invite_user_unid, invitation.invite_team_unid, 1)
             invitation.delete(soft=False)
-            team = Team.get_team_by_unid(invitation.invite_team_unid)
-            team.number_participants += 1
+            Team.add_participant(invitation.invite_team_unid)
             return {'status': 'true', 'message': 'Invite accepted'}, 201
-        elif status.lower() == 'decline' or status.lower() == 'revoke':
+        elif status in ('decline', 'revoke'):
             invitation.delete(soft=False)
             return {'status': 'true', 'message': 'Invitation processed'}, 201
+        else:
+            return {'status': 'true', 'message': 'Invalid status'}, 400
 

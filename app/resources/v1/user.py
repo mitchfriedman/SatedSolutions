@@ -19,9 +19,21 @@ class User(BasicProtectedResource):
 
 
 class Users(BasicProtectedResource):
+    
+    get_users_parser = reqparse.RequestParser()
+
+    get_users_parser.add_argument('email', type=str, help='The email to filter on', required=False, location='args')
+
 
     def get(self):
-        users = UserModel.get_all_users()
+        args = self.get_users_parser.parse_args()
+        email = args['email']
+
+        print(email)
+        if email:
+            users = UserModel.get_list(email=email.lower())
+        else:
+            users = UserModel.get_all_users()
 
         user_teams = [UserTeam.get_team_by_user(user.unid) for user in users]
         serialized = []

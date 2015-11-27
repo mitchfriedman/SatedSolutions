@@ -26,7 +26,7 @@ class Team(base):
         self.team_name = name
         self.team_captain = team_captain or ''
         self.max_participants = max_participants or 10
-        self.number_participants = current_num_participants or 0 # 1 for team captain, 0 for team with no captain
+        self.number_participants = current_num_participants or 1 # 1 for team captain, 0 for team with no captain
         self.route_id = 0
         self.requires_accessibility = False
         self.public = public
@@ -66,4 +66,8 @@ class Team(base):
     @classmethod
     def get_all_teams(cls):
         return cls.get_teams_query().all()
-
+    
+    @classmethod
+    def add_participant(cls, unid):
+        team = cls.get_team_by_unid(unid)
+        team.number_participants += 1
