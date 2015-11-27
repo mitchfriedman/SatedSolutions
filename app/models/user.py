@@ -60,8 +60,12 @@ class User(base):
         return User.get_single(email=email)
 
     @classmethod
+    def get_users_ordered(cls):
+        return User.get_list().order_by(cls.last.asc())
+
+    @classmethod
     def get_all_users(cls):
-        return User.get_list().all()
+        return cls.get_users_ordered().all()
 
     @classmethod
     def fetch_user_by_unid(cls, unid):

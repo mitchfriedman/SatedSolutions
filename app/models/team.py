@@ -48,12 +48,16 @@ class Team(base):
         return team
 
     @classmethod
+    def get_teams_query(cls):
+        return Team.get_list(public=1).order_by(cls.team_name.asc()) 
+
+    @classmethod
     def get_teams_by_name(cls, name=None):
-        return Team.get_list(team_name=name).all()
+        return cls.get_teams_query().filter_by(name=name)
 
     @classmethod
     def search_teams_by_name(cls, name=None):
-        return Team.get_list(public=1).filter(Team.team_name.like("%{}%".format(name))).all()
+        return cls.get_teams_query().filter(cls.team_name.like("%{}%".format(name))).all()
 
     @classmethod
     def get_team_by_unid(cls, team_unid):
@@ -61,5 +65,5 @@ class Team(base):
 
     @classmethod
     def get_all_teams(cls):
-        return Team.get_list(public=1).all()
+        return cls.get_teams_query().all()
 
