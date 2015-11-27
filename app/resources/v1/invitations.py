@@ -13,20 +13,19 @@ class Invitations(BasicProtectedResource):
     invite_parser = reqparse.RequestParser()
     
     invite_parser.add_argument('team_unid', type=str, help='The team to invite a participant to', required=True, location='form')
-    invite_parser.add_argument('invitee_unid', type=str, help='The team member type', required=False)
-    invite_parser.add_argument('invitee_email', type=str, help='The email of a user to invite', required=False)
+    invite_parser.add_argument('invitee_unid', type=str, help='The team member type', required=False, location='form')
+    invite_parser.add_argument('invitee_email', type=str, help='The email of a user to invite', required=False, location='form')
     
     get_invites_parser = reqparse.RequestParser()
     get_invites_parser.add_argument('user_unid', type=str, help='The user to query by', required=False, location="args")
     get_invites_parser.add_argument('team_unid', type=str, help='The team to query by', required=False, location="args")
+
 
     def post(self):
         args = self.invite_parser.parse_args()
         team_unid = args['team_unid']
         invitee_unid = args['invitee_unid']
         invitee_email = args['invitee_email']
-
-        print(invitee_email)
 
         if not invitee_unid and not invitee_email:
             return {'status': 'false', 'message': 'Must invite by email or unid'}, 400
@@ -43,9 +42,8 @@ class Invitations(BasicProtectedResource):
         user_team_exist = UserTeam.get_user_team_by_user_and_team(invitee_unid, team.unid)
 
         if user_team_exist:
-            return {'status': 'false', 'message': 'User already on that team'}
-
-        invitation = TeamInvite(team_unid, invitee_unid)
+            return {'status': 'false', 'message': 'User already on that team'}, 400
+invitation = TeamInvite(team_unid, invitee_unid)
 
         return {'status': 'true', 'message': 'Invitation sent successfully', 'invitation_unid': invitation.unid}, 201
     
@@ -55,10 +53,7 @@ class Invitations(BasicProtectedResource):
         team_unid = args['team_unid']
         
         if team_unid:
-            team = Team.get_team_by_unid(team_unid)
-            if not team:
-                return {'status': 'false', 'message': 'No team found'}
-        
+            team = get_team(team_unid)
             result = TeamInvite.get_by_team_unid(team_unid)
         else:
             result = TeamInvite.get_invites()
