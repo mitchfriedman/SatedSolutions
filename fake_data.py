@@ -15,7 +15,7 @@ def create_routes():
     from app.models.route import Route
     Route('Route 1', 'university of guelph, ontario', 'cherry blossom guelph, ontario', '5:30', 'Bus', 'No')
     Route('Awesome Route 241', 'Stone Road Mall, Ontario', 'Popeyes Guelph, Ontario', '7:30', 'Walking', 'Yes')
-    Route('My CFC route', 'Stone Road Mall, Ontario', 'Stone Road Mall, Ontario', '7:30', 'Driving', 'No')
+    Route('My CFC route', 'cherry blossom guelph, ontario', 'Stone Road Mall, Ontario', '7:30', 'Driving', 'No')
 
 
 if __name__ == '__main__':
