@@ -46,4 +46,3 @@ class Route(base):
     @classmethod
     def get_route_by_unid(cls, unid):
         return Route.get_single(unid=unid)
-
