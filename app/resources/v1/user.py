@@ -22,9 +22,15 @@ class Users(BasicProtectedResource):
 
     def get(self):
         users = UserModel.get_all_users()
-        users_serialized = [user.serialize() for user in users]
+
+        user_teams = [UserTeam.get_team_by_user(user.unid) for user in users]
+        serialized = []
+        for member, user in zip(user_teams, users):
+            temp = user.serialize()
+            temp['team_unid'] = member.team_unid if member else None
+            serialized.append(temp)
 
         return {
-            'users': users_serialized
+            'users': serialized
         }
 
