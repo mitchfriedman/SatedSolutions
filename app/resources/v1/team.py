@@ -1,8 +1,16 @@
 from app.models.team import Team as TeamModel
 from app.models.user_team import UserTeam
 from app.models.user import User
-from flask_restful import reqparse
+from flask_restful import reqparse, abort
 from app.resources.v1.base import BasicProtectedResource
+
+
+def get_team(team_unid):
+    team = TeamModel.get_team_by_unid(team_unid)
+    if not team:
+        abort(404, message='No team found', status='false')
+
+    return team
 
 
 def get_users_from_team(team_unid):
@@ -83,24 +91,19 @@ class Team(BasicProtectedResource):
 
     
     def get(self, team_unid):
-        team = TeamModel.get_team_by_unid(team_unid)
-        if team:
-            users = get_users_from_team(team_unid)        
-            team_serialized = team.serialize()
-            team_serialized['users'] = users
-            return {
-                'team': team_serialized
-            }, 200
-            
-        else:
-            return {'status': 'false'}, 404
+        team = get_team(team_unid)
+
+        users = get_users_from_team(team_unid)        
+        team_serialized = team.serialize()
+        team_serialized['users'] = users
+        return {
+            'team': team_serialized
+        }, 200
+        
 
     def post(self, team_unid):
         args = self.update_instance_parser.parse_args()
-        team = TeamModel.get_team_by_unid(team_unid)
-        
-        if not team:
-            return {'status': 'false'}, 404
+        team = get_team(team_unid)       
 
         team_captain = args.get('team_captain')
         if team_captain:

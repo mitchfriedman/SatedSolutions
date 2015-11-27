@@ -3,7 +3,8 @@ from app.models.team import Team
 from app.models.user import User
 from flask_restful import reqparse
 from app.resources.v1.base import BasicProtectedResource
-from app.resources.v1.team import get_users_from_team
+from app.resources.v1.team import get_users_from_team, get_team
+from app.resources.v1.user import get_user
 
 
 class Participants(BasicProtectedResource):
@@ -18,15 +19,9 @@ class Participants(BasicProtectedResource):
         user_unid = args['user_unid']
         member_type = args['member_type']
 
-        team = Team.get_team_by_unid(team_unid)
-
-        if not team:
-            return {'status': 'false', 'message': 'Invalid team unid'}
+        team = get_team(team_unid)
         
-        user = User.fetch_user_by_unid(user_unid)
-
-        if not user:
-            return {'status': 'false', 'message': 'Invalid user unid'}
+        user = get_user(user_unid)
 
         user_team = UserTeam.add_user_to_team(user_unid, team_unid, member_type)
         if user_team.member_type == 2:
@@ -36,10 +31,7 @@ class Participants(BasicProtectedResource):
         return {'status': 'true', 'user_team_unid': user_team.unid, 'team': team.serialize()}
 
     def get(self, team_unid):
-        team = Team.get_team_by_unid(team_unid)
-
-        if not team:
-            return {'status': 'false', 'message': 'No team found'}
+        team = get_team(team_unid)
 
         return {'users': get_users_from_team(team_unid)}
     
@@ -47,15 +39,9 @@ class Participants(BasicProtectedResource):
 class Participant(BasicProtectedResource):
 
     def get(self, team_unid, user_unid):
-        team = Team.get_team_by_unid(team_unid)
+        team = get_team(team_unid)
 
-        if not team:
-            return {'status': 'false', 'message': 'No team found'}, 404
-
-        user = User.fetch_user_by_unid(user_unid)
-
-        if not user:
-            return {'status': 'false', 'message': 'No user found'}, 404
+        user = get_user(user_unid)
 
         user_team = UserTeam.get_user_team_by_user_and_team(user_unid, team_unid)
     
@@ -66,15 +52,9 @@ class Participant(BasicProtectedResource):
 
 
     def delete(self, team_unid, user_unid):
-        team = Team.get_team_by_unid(team_unid)
+        team = get_team(team_unid)
 
-        if not team:
-            return {'status': 'false', 'message': 'No team found'}, 404
-
-        user = User.fetch_user_by_unid(user_unid)
-
-        if not user:
-            return {'status': 'false', 'message': 'No user found'}, 404
+        user = get_user(user_unid)
 
         user_team = UserTeam.get_user_team_by_user_and_team(user_unid, team_unid)
 
