@@ -16,7 +16,7 @@ class TeamRoutes(BasicProtectedResource):
         route_unid = args['route_unid']
         route = get_route(route_unid)
 
-        found = RouteTeam.get_team_route(team_unid):
+        found = RouteTeam.get_team_route(team_unid)
         if found:
             found.delete(soft=False)
 
