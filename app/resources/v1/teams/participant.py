@@ -62,11 +62,11 @@ class Participant(BasicProtectedResource):
             return {'status': 'false', 'message': 'The given user is not on that team'}, 400
         
         is_captain = user_team.member_type == 2
+        user_team.delete(soft=False)
         new_captain = None
         if is_captain:
             new_captain = UserTeam.get_oldest_team_member(team_unid)
 
-        user_team.delete(soft=False)
         team.number_participants -= 1
 
         if new_captain:
