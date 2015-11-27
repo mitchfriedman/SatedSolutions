@@ -64,19 +64,14 @@ class Participant(BasicProtectedResource):
         is_captain = user_team.member_type == 2
         user_team.delete(soft=False)
         new_captain = None
+        team.number_participants -= 1
+
         if is_captain:
             new_captain = UserTeam.get_oldest_team_member(team_unid)
 
-        team.number_participants -= 1
-
         if new_captain:
             new_captain.member_type = 2
-            team = Team.get_team_by_unid(user_team.team_unid)
             team.team_captain = new_captain.unid
-
-        #found_captain_user = UserTeam.get_single(team_unid=team_unid, member_type=2)
-        #if found_captain_user:
-        #    team.team_captain = found_captain_user.user_unid
 
         return {}, 204
 
