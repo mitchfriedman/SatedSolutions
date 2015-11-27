@@ -7,6 +7,8 @@ from app.resources.v1.team import Teams, Team
 from app.resources.v1.teams.participant import Participants, Participant
 from app.resources.v1.user import User, Users
 from app.resources.v1.invitations import Invitations, Invitation
+from app.resources.v1.route import Routes
+from app.resources.v1.teams.routes import TeamRoutes
 
 
 api = Api()
@@ -27,4 +29,10 @@ api.add_resource(Participant, '/api/Teams/<string:team_unid>/Participants/<strin
 
 api.add_resource(Users, '/api/Users')
 api.add_resource(User, '/api/Users/<string:user_unid>')
+
+
+api.add_resource(TeamRoutes, '/api/Teams/<team_unid>/Routes')
+
+api.add_resource(Routes, '/api/Routes')
+
 
