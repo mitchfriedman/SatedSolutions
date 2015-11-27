@@ -75,7 +75,7 @@ class Participant(BasicProtectedResource):
 
         found_captain_user = UserTeam.get_single(team_unid=team_unid, member_type=2)
         if found_captain_user:
-            team.team_captain = new_captain.user_unid
+            team.team_captain = found_captain_user.user_unid
 
         return {}, 204
 
