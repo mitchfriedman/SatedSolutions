@@ -4,13 +4,17 @@ from app.models.team import Team
 from app.models.team_invite import TeamInvite
 from flask_restful import Resource, reqparse
 from app.resources.v1.base import BasicProtectedResource
+from app.resources.v1.user import get_user
+from app.resources.v1.team import get_team
+
 
 class Invitations(BasicProtectedResource):
 
     invite_parser = reqparse.RequestParser()
     
-    invite_parser.add_argument('team_unid', type=str, help='The team to invite a participant to', required=True)
-    invite_parser.add_argument('invitee_unid', type=str, help='The team member type', required=True)
+    invite_parser.add_argument('team_unid', type=str, help='The team to invite a participant to', required=True, location='form')
+    invite_parser.add_argument('invitee_unid', type=str, help='The team member type', required=False)
+    invite_parser.add_argument('invitee_email', type=str, help='The email of a user to invite', required=False)
     
     get_invites_parser = reqparse.RequestParser()
     get_invites_parser.add_argument('user_unid', type=str, help='The user to query by', required=False, location="args")
@@ -19,17 +23,22 @@ class Invitations(BasicProtectedResource):
     def post(self):
         args = self.invite_parser.parse_args()
         team_unid = args['team_unid']
-        invitee_unid= args.get('invitee_unid') # default value of 1 (participant)
+        invitee_unid = args['invitee_unid']
+        invitee_email = args['invitee_email']
 
-        if not invitee_unid:
-            return {'status': 'false', 'message': 'Invalid invitee email'}
+        print(invitee_email)
+
+        if not invitee_unid and not invitee_email:
+            return {'status': 'false', 'message': 'Must invite by email or unid'}, 400
         
-        user = User.fetch_user_by_unid(invitee_unid)
+        if invitee_unid:
+            user = get_user(invitee_unid)
+        else:
+            user = User.fetch_user_by_email(invitee_email)
+            if not user:
+                return {'status': 'false', 'message': 'No user found'}, 404
 
-        if not user:
-            return {'status': 'false', 'message': 'Invalid inviter unid'}
-
-        team = Team.get_team_by_unid(team_unid)
+        team = get_team(team_unid)
 
         user_team_exist = UserTeam.get_user_team_by_user_and_team(invitee_unid, team.unid)
 
@@ -55,9 +64,7 @@ class Invitations(BasicProtectedResource):
             result = TeamInvite.get_invites()
 
         if user_unid:
-            user = User.fetch_user_by_unid(user_unid)
-            if not user:
-                return {'status': 'false', 'message': 'No user found'}
+            user = get_user(user_unid)
             team_invites = result.filter_by(invite_user_unid=user_unid)
         else:
             team_invites = result
